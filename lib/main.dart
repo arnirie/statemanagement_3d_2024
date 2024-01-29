@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:statemanagement_3d/providers/cartprovider.dart';
+import 'package:statemanagement_3d/providers/productsprovider.dart';
 import 'package:statemanagement_3d/screens/viewproducts.dart';
 
 void main() {
@@ -10,9 +13,19 @@ class ProductsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ViewProductsScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => Products(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CartItems(),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: ViewProductsScreen(),
+      ),
     );
   }
 }

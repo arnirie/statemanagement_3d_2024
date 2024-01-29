@@ -1,57 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:statemanagement_3d/models/product.dart';
-import 'package:statemanagement_3d/providers/products.dart';
+import 'package:statemanagement_3d/providers/productsprovider.dart';
 import 'package:statemanagement_3d/screens/manageproduct.dart';
 
-class ViewProductsScreen extends StatefulWidget {
+class ViewProductsScreen extends StatelessWidget {
   ViewProductsScreen({super.key});
 
-  @override
-  State<ViewProductsScreen> createState() => _ViewProductsScreenState();
-}
+  void openAddScreen(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ManageProduct(),
+      ),
+    );
+  }
 
-class _ViewProductsScreenState extends State<ViewProductsScreen> {
-  Products productProvider = Products();
-
-  // void addProduct(Product p) {
-  //   setState(() {
-  //     listProducts.add(p);
-  //   });
-  // }
+  void openEditScreen(BuildContext context, int index) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ManageProduct(
+          index: index,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    productProvider.products.add(
-      Product(productCode: 'productCode', nameDesc: 'nameDesc', price: 500),
-    );
     return Scaffold(
       appBar: AppBar(
         title: const Text('View Products'),
         actions: [
           IconButton(
-            onPressed: () {
-              // Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder: (_) => ManageProduct(
-              //       addProduct: addProduct,
-              //     ),
-              //   ),
-              // );
-            },
+            onPressed: () => openAddScreen(context),
             icon: Icon(
               Icons.add,
             ),
           )
         ],
       ),
-      body: ListView.builder(
-        itemBuilder: (_, index) {
-          return ListTile(
-            title: Text(productProvider.products[index].nameDesc),
-            subtitle: Text(productProvider.products[index].productCode),
+      body: Consumer<Products>(
+        builder: (_, provider, child) {
+          return ListView.builder(
+            itemBuilder: (_, index) {
+              return Card(
+                child: ListTile(
+                  onTap: () => openEditScreen(context, index),
+                  leading: IconButton(
+                    onPressed: () {
+                      provider.toggleFavorite(index);
+                    },
+                    icon: Icon(
+                      provider.items[index].isFavorite
+                          ? Icons.favorite
+                          : Icons.favorite_outline,
+                    ),
+                  ),
+                  title: Text(provider.items[index].nameDesc),
+                  subtitle: Text(provider.items[index].productCode),
+                  trailing: IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.shopping_cart),
+                  ),
+                ),
+              );
+            },
+            itemCount: provider.totalNoItems,
           );
         },
-        itemCount: productProvider.numberOfItems,
       ),
     );
   }

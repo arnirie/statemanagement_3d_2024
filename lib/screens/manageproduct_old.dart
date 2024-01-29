@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:provider/provider.dart';
 import 'package:statemanagement_3d/models/product.dart';
-import 'package:statemanagement_3d/providers/productsprovider.dart';
 
 class ManageProduct extends StatefulWidget {
   ManageProduct({
     super.key,
+    this.addProduct,
+    this.editProduct,
+    this.product,
     this.index,
   });
 
+  final Function(Product p)? addProduct;
+  final Function(Product p, int index)? editProduct;
+
+  Product? product;
   int? index;
 
   @override
@@ -27,28 +32,27 @@ class _ManageProductState extends State<ManageProduct> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    codeController.text = widget.product?.productCode ?? '';
+    nameController.text = widget.product?.nameDesc ?? '';
+    priceController.text = widget.product?.price.toString() ?? '';
+    // if(widget.product != null){
+    //   codeController.text = widget.product!.productCode;
+    // }
   }
 
 //ADD
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<Products>(context, listen: false);
-    if (widget.index != null) {
-      var product = provider.item(widget.index!);
-      codeController.text = product.productCode;
-      nameController.text = product.nameDesc;
-      priceController.text = product.price.toString();
-    }
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.index == null ? 'Add Product' : 'Edit Product'),
+        title: Text(widget.product == null ? 'Add Product' : 'Edit Product'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(12),
         children: [
           TextField(
             // enabled: false,
-            readOnly: widget.index != null,
+            readOnly: widget.product != null,
             controller: codeController,
             decoration: InputDecoration(
                 label: Text('Product Code'), border: OutlineInputBorder()),
@@ -74,15 +78,14 @@ class _ManageProductState extends State<ManageProduct> {
                 nameDesc: nameController.text,
                 price: double.parse(priceController.text),
               );
-              if (widget.index == null) {
-                provider.add(p);
+              if (widget.product == null) {
+                widget.addProduct!(p);
               } else {
-                provider.edit(p, widget.index!);
+                widget.editProduct!(p, widget.index!);
               }
-
               Navigator.of(context).pop();
             },
-            child: Text(widget.index == null ? 'ADD' : "EDIT"),
+            child: Text(widget.product == null ? 'ADD' : "EDIT"),
           ),
         ],
       ),

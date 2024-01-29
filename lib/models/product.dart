@@ -1,11 +1,13 @@
 class Product {
   final String productCode;
-  final String nameDesc;
-  final double price;
+  String nameDesc;
+  double price;
+  bool isFavorite;
 
   Product({
     required this.productCode,
     required this.nameDesc,
     required this.price,
+    this.isFavorite = false,
   });
 }
