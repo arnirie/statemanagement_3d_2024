@@ -1,8 +1,10 @@
+import 'package:statemanagement_3d/helpers/dbhelper.dart';
+
 class Product {
-  final String productCode;
-  String nameDesc;
-  double price;
-  bool isFavorite;
+  late String productCode;
+  late String nameDesc;
+  late double price;
+  late bool isFavorite;
 
   Product({
     required this.productCode,
@@ -10,4 +12,19 @@ class Product {
     required this.price,
     this.isFavorite = false,
   });
+
+  Product.fromMap(Map<String, dynamic> values) {
+    productCode = values[DbHelper.prodCode];
+    nameDesc = values[DbHelper.prodName];
+    price = double.parse(values[DbHelper.prodPrice].toString());
+    isFavorite = false;
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      DbHelper.prodCode: productCode,
+      DbHelper.prodName: nameDesc,
+      DbHelper.prodPrice: price,
+    };
+  }
 }

@@ -5,6 +5,7 @@ import 'package:statemanagement_3d/providers/productsprovider.dart';
 import 'package:statemanagement_3d/screens/viewproducts.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const ProductsApp());
 }
 
